@@ -64,10 +64,10 @@
 <div class="wrap">
 
 <h1>海外营销 AI Agent 服务平台</h1>
-<div class="meta">产品需求文档（PRD） · 版本 v1.0 · 面向跨境企业的 B2B 海外社媒营销自动化服务站</div>
+<div class="meta">产品需求文档（PRD） · 版本 v1.1 · 面向跨境企业的 B2B 海外社媒营销自动化服务站</div>
 
 <div class="note">
-<strong>产品定位：</strong>一个面向跨境/外贸企业的 B2B 海外营销自动化服务平台（类比阿里国际站作为企业出海服务入口），以 AI Agent 为核心，覆盖 LinkedIn、Facebook 等海外社媒的<strong>市场研究 → 选题 → 内容生成 → 审核 → 排期 → 发布 → 线索整理 → 效果分析</strong>全链路，帮助企业提升获客效率、稳定内容质量、控制人工与模型成本。
+<strong>产品定位：</strong>一个面向跨境/外贸企业的 B2B 海外营销自动化服务平台（类比阿里国际站作为企业出海服务入口），以 AI Agent 为核心，覆盖 LinkedIn、Facebook、X（Twitter）、TikTok 等海外社媒的<strong>市场研究 → 选题 → 内容生成 → 审核 → 排期 → 发布 → 线索整理 → 效果分析</strong>全链路，帮助企业提升获客效率、稳定内容质量、控制人工与模型成本。
 </div>
 
 <!-- ============================ 1. 背景与目标 ============================ -->
@@ -116,7 +116,7 @@
   <li>内容 A/B 测试与自动择优</li>
   <li>竞品动态监控与告警</li>
   <li>团队细粒度权限与审批流</li>
-  <li>更多社媒平台（X/Twitter、Instagram、TikTok 等）</li>
+  <li>更多社媒平台（Instagram、YouTube、Pinterest 等）</li>
 </ul>
 </div>
 
@@ -152,7 +152,7 @@
 <tr><td>知识库条目</td><td>品牌信息、产品事实、平台表达规范、竞品档案等可被 Agent 检索的事实单元</td></tr>
 <tr><td>营销任务</td><td>一次完整的 Agent 营销活动，包含目标、平台、频率、预算与执行步骤</td></tr>
 <tr><td>内容稿件</td><td>Agent 生成、经审核后发布的单条社媒内容</td></tr>
-<tr><td>社媒账号</td><td>企业绑定的 LinkedIn / Facebook 等平台账号</td></tr>
+<tr><td>社媒账号</td><td>企业绑定的 LinkedIn / Facebook / X（Twitter）/ TikTok 等平台账号</td></tr>
 <tr><td>线索</td><td>从社媒互动中提取的潜在客户信息</td></tr>
 </tbody>
 </table>
@@ -189,8 +189,21 @@
 <tbody>
 <tr><td>品牌信息</td><td>品牌定位、slogan、核心价值主张、禁用词</td><td>统一品牌调性</td></tr>
 <tr><td>产品信息</td><td>产品名、功能、参数、卖点、适用场景</td><td>内容事实依据</td></tr>
-<tr><td>平台规范</td><td>LinkedIn/Facebook 字数、语气、Hashtag 习惯</td><td>适配平台表达</td></tr>
+<tr><td>平台规范</td><td>LinkedIn / Facebook / X / TikTok 字数、语气、Hashtag 习惯</td><td>适配平台表达</td></tr>
 <tr><td>竞品档案</td><td>竞品名称、定位、主打卖点</td><td>差异化选题</td></tr>
+</tbody>
+</table>
+<h4>文档批量导入</h4>
+<p>支持将企业现有文档直接导入知识库，系统自动抽取文本并切分为可检索条目，降低手动录入成本。</p>
+<table>
+<thead><tr><th>项</th><th>规则</th></tr></thead>
+<tbody>
+<tr><td>支持格式</td><td>PDF、Word（.docx）、PPT（.pptx）、Excel（.xlsx）、纯文本（.txt/.md）、网页（URL）</td></tr>
+<tr><td>解析方式</td><td>按格式提取正文与标题层级；PDF 扫描件走 OCR；抽取失败时回退到文件名与外部元数据</td></tr>
+<tr><td>切分规则</td><td>按标题层级 / 段落 / 固定长度（默认 500 字，可配置）切分为条目，保留来源文档引用</td></tr>
+<tr><td>单文件限制</td><td>单文件 ≤ 50MB；单次批量 ≤ 20 个文件 <code>[TBD 可按企业套餐调整]</code></td></tr>
+<tr><td>导入后处理</td><td>自动归类为"产品信息"或"品牌信息"（用户可改）；状态默认为<span class="state s-draft">草稿</span>，用户确认后生效</td></tr>
+<tr><td>异常</td><td>格式不支持 / 解析失败的文件单独列出并标记失败原因，允许重试；不影响其他文件导入</td></tr>
 </tbody>
 </table>
 <h4>处理规则</h4>
@@ -246,7 +259,8 @@
 <p><strong>目的：</strong>绑定企业社媒账号并将审核通过的内容发布到目标平台。</p>
 <h4>账号绑定</h4>
 <ul>
-  <li>支持 LinkedIn、Facebook 账号 OAuth 授权绑定；P0 覆盖这两个平台。</li>
+  <li>支持 LinkedIn、Facebook、X（Twitter）、TikTok 账号 OAuth 授权绑定；P0 覆盖这四个平台。</li>
+  <li>X（Twitter）使用 OAuth 2.0 授权码模式；TikTok 使用官方 Login Kit 授权。</li>
   <li>绑定后显示账号名称、平台、授权状态、到期时间；授权失效时标红并提醒重新授权。</li>
 </ul>
 <h4>发布规则</h4>
@@ -284,6 +298,22 @@
 <tr><td>直接编辑</td><td>审核人修改稿件内容</td><td>保存后进入"待发布"，记录修改人与版本</td></tr>
 </tbody>
 </table>
+<h4>低风险内容自动通过</h4>
+<p>为降低人工审核负担，满足以下<strong>全部</strong>条件的稿件判定为"低风险"，可由系统自动通过并进入"待发布"，无需人工逐一审阅：</p>
+<table>
+<thead><tr><th>判定维度</th><th>低风险条件</th></tr></thead>
+<tbody>
+<tr><td>内容事实</td><td>生成内容命中的知识库关键事实覆盖率 ≥ 设定阈值（默认 80%）</td></tr>
+<tr><td>品牌合规</td><td>未出现品牌禁用词、未偏离品牌定位（由 Agent 自检通过）</td></tr>
+<tr><td>敏感内容</td><td>不含政治、宗教、争议性话题，未触发敏感词库</td></tr>
+<tr><td>平台合规</td><td>字数、Hashtag 数量符合目标平台规范</td></tr>
+<tr><td>任务配置</td><td>该任务已开启"低风险自动通过"开关（由企业管理员配置）</td></tr>
+</tbody>
+</table>
+<ul>
+  <li>自动通过的稿件仍记录在"已审核"列表，标注"系统自动通过"，审核人可事后抽查与撤销。</li>
+  <li>不满足低风险条件的稿件一律进入人工审核队列。</li>
+</ul>
 <h4>规则</h4>
 <ul>
   <li>审核超时（默认 24 小时，可配置）向审核人发送提醒。</li>
@@ -297,7 +327,7 @@
 <p><strong>目的：</strong>从社媒互动中提取潜在客户线索，并流转至企业 CRM。</p>
 <h4>线索来源</h4>
 <ul>
-  <li>LinkedIn/Facebook 私信、评论、主页访问表单中提取的潜在客户信息。</li>
+  <li>LinkedIn、Facebook、X（Twitter）、TikTok 私信、评论、主页访问表单中提取的潜在客户信息。</li>
 </ul>
 <h4>线索字段</h4>
 <table>
@@ -427,14 +457,13 @@
 <h2>6. 开放问题（待确认）</h2>
 <div class="card">
 <ol>
-  <li><strong>平台范围：</strong>P0 确认仅 LinkedIn + Facebook，是否需提前纳入 X/Twitter？</li>
-  <li><strong>知识库来源：</strong>是否支持从企业现有文档（PDF/网页）批量导入，还是仅手动录入？</li>
-  <li><strong>审核策略：</strong>是否所有内容必须人工审核，还是低风险内容可配置为"自动通过"？</li>
   <li><strong>CRM 对接：</strong>首批支持哪些 CRM（如 HubSpot、Salesforce、纷享销客）？是否需要内置轻量 CRM？</li>
   <li><strong>多租户与数据隔离：</strong>平台服务多企业时，数据隔离与合规（如 GDPR）的边界需法务确认。</li>
   <li><strong>成本上限：</strong>任务级成本上限的默认值与超额处理策略（暂停/降级模型/通知）。</li>
   <li><strong>语言范围：</strong>P0 是否仅英文，小语种纳入 P1 的优先级？</li>
+  <li><strong>文档导入限制：</strong>单文件 50MB / 单次 20 个的默认限制是否需按企业套餐差异化？</li>
 </ol>
+<p class="small">已确认决策（v1.1）：P0 平台纳入 LinkedIn、Facebook、X（Twitter）、TikTok；知识库支持文档批量导入；低风险内容自动通过审核。</p>
 </div>
 
 <div class="meta" style="margin-top:40px;text-align:center">— 文档结束 —</div>
