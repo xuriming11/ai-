@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>海外营销 AI Agent 服务平台 · 产品需求文档</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#fff; --ink:#1f2937; --sub:#6b7280;
+    --line:#e5e7eb; --brand:#0ea5e9; --brand-2:#0369a1;
+    --ok:#16a34a; --warn:#d97706; --err:#dc2626; --chip:#eef2ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    line-height:1.7;font-size:15px}
+  .wrap{max-width:980px;margin:0 auto;padding:40px 28px 80px}
+  h1{font-size:30px;margin:0 0 6px;letter-spacing:.5px}
+  .meta{color:var(--sub);font-size:13px;margin-bottom:30px}
+  h2{font-size:22px;margin:42px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--line)}
+  h3{font-size:17px;margin:28px 0 10px;color:var(--brand-2)}
+  h4{font-size:15px;margin:18px 0 8px}
+  p{margin:8px 0}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;
+    padding:20px 24px;margin:14px 0;box-shadow:0 1px 2px rgba(0,0,0,.03)}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:10px 0}
+  th,td{border:1px solid var(--line);padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#f3f4f6;font-weight:600}
+  tr:nth-child(even) td{background:#fafbfc}
+  .chip{display:inline-block;background:var(--chip);color:#4338ca;font-size:12px;
+    padding:2px 9px;border-radius:999px;margin:2px 4px 2px 0}
+  .p0{background:#dcfce7;color:#166534} .p1{background:#fef3c7;color:#92400e} .out{background:#fee2e2;color:#991b1b}
+  ul,ol{margin:8px 0;padding-left:22px}
+  li{margin:4px 0}
+  code{background:#f1f5f9;padding:1px 6px;border-radius:4px;font-size:13px;color:#0f172a}
+  .flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:14px 0}
+  .node{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 14px;
+    font-size:13px;font-weight:500}
+  .node.agent{background:#e0f2fe;border-color:#7dd3fc}
+  .node.human{background:#fef9c3;border-color:#fde047}
+  .node.end{background:#dcfce7;border-color:#86efac}
+  .arrow{color:var(--sub);font-weight:700}
+  .state{display:inline-block;padding:3px 10px;border-radius:6px;font-size:12px;font-weight:600}
+  .s-draft{background:#f3f4f6;color:#374151}
+  .s-review{background:#fef3c7;color:#92400e}
+  .s-ready{background:#dbeafe;color:#1e40af}
+  .s-live{background:#dcfce7;color:#166534}
+  .s-fail{background:#fee2e2;color:#991b1b}
+  .s-cancel{background:#f3f4f6;color:#6b7280}
+  .note{border-left:3px solid var(--brand);background:#f0f9ff;padding:10px 14px;border-radius:0 6px 6px 0;
+    font-size:13px;color:#0c4a6e;margin:10px 0}
+  .assume{border-left:3px solid var(--warn);background:#fffbeb;padding:10px 14px;border-radius:0 6px 6px 0;
+    font-size:13px;color:#78350f;margin:10px 0}
+  .fr-head{display:flex;align-items:center;gap:10px;margin-top:26px}
+  .fr-id{background:var(--brand);color:#fff;font-size:12px;padding:3px 10px;border-radius:6px;font-weight:700}
+  svg{max-width:100%;height:auto}
+  .legend{font-size:12px;color:var(--sub);margin-top:6px}
+  .small{font-size:13px;color:var(--sub)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.two-col{grid-template-columns:1fr}.wrap{padding:20px 14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>海外营销 AI Agent 服务平台</h1>
+<div class="meta">产品需求文档（PRD） · 版本 v1.0 · 面向跨境企业的 B2B 海外社媒营销自动化服务站</div>
+
+<div class="note">
+<strong>产品定位：</strong>一个面向跨境/外贸企业的 B2B 海外营销自动化服务平台（类比阿里国际站作为企业出海服务入口），以 AI Agent 为核心，覆盖 LinkedIn、Facebook 等海外社媒的<strong>市场研究 → 选题 → 内容生成 → 审核 → 排期 → 发布 → 线索整理 → 效果分析</strong>全链路，帮助企业提升获客效率、稳定内容质量、控制人工与模型成本。
+</div>
+
+<!-- ============================ 1. 背景与目标 ============================ -->
+<h2>1. 背景与目标</h2>
+
+<div class="card">
+<h4>观察到的问题</h4>
+<ul>
+  <li>跨境企业的海外社媒营销（LinkedIn、Facebook 等）高度依赖人工：从行业/竞品研究、选题、英文撰写到排期发布、线索回复，环节多、周期长、内容质量不稳定。</li>
+  <li>营销团队难以同时兼顾"内容产出量"与"品牌一致性"，且线索分散在各社媒平台，无法与 CRM 形成闭环。</li>
+  <li>缺乏对模型调用成本、人工耗时、有效线索与转化表现的统一度量，难以持续优化。</li>
+</ul>
+<h4>产品决策</h4>
+<p>搭建以 AI Agent 为核心的海外营销自动化服务平台，将营销需求转化为<strong>可运行、可评估、可迭代</strong>的 Agent 任务流，并通过知识库、人工审核、社媒/CRM 对接保障落地。</p>
+<h4>可观测的期望结果</h4>
+<ul>
+  <li>营销任务可在平台上自动运行，关键节点支持人工审核干预；</li>
+  <li>生成内容符合品牌定位、产品事实与平台表达习惯；</li>
+  <li>线索可统一整理并流转至 CRM，内容效果与成本可度量。</li>
+</ul>
+</div>
+
+<!-- ============================ 2. 范围 ============================ -->
+<h2>2. 范围</h2>
+
+<h3>2.1 P0（最小完整闭环）</h3>
+<div class="card">
+<p><span class="chip p0">P0</span> 支撑"从配置知识库 → 自动产出并发布内容 → 回收线索与效果"的端到端闭环：</p>
+<ul>
+  <li><strong>FR-1</strong> 品牌与产品知识库管理</li>
+  <li><strong>FR-2</strong> AI Agent 营销任务流（研究 / 选题 / 生成 / 排期 / 发布）</li>
+  <li><strong>FR-3</strong> 社媒账号管理与内容发布</li>
+  <li><strong>FR-4</strong> 人工审核工作流</li>
+  <li><strong>FR-5</strong> 线索整理与 CRM 对接</li>
+  <li><strong>FR-6</strong> 效果分析看板</li>
+  <li><strong>FR-7</strong> 任务日志、异常处理与重试监控</li>
+  <li><strong>FR-8</strong> 模型调用成本监控</li>
+</ul>
+</div>
+
+<h3>2.2 P1（增强）</h3>
+<div class="card">
+<p><span class="chip p1">P1</span> 在闭环稳定后扩展：</p>
+<ul>
+  <li>多语言内容生成（除英文外的小语种）</li>
+  <li>内容 A/B 测试与自动择优</li>
+  <li>竞品动态监控与告警</li>
+  <li>团队细粒度权限与审批流</li>
+  <li>更多社媒平台（X/Twitter、Instagram、TikTok 等）</li>
+</ul>
+</div>
+
+<h3>2.3 明确排除</h3>
+<div class="card">
+<p><span class="chip out">排除</span></p>
+<ul>
+  <li>付费广告投放（Ads）管理——本平台聚焦有机内容营销</li>
+  <li>电商交易、支付、订单履约闭环</li>
+  <li>社媒账号的注册与养号</li>
+  <li>代理企业直接回复客户私信的客服能力（仅做线索提取与分发）</li>
+</ul>
+</div>
+
+<!-- ============================ 3. 产品模型 ============================ -->
+<h2>3. 产品模型</h2>
+
+<h3>3.1 角色</h3>
+<table>
+<thead><tr><th>角色</th><th>说明</th><th>核心权限</th></tr></thead>
+<tbody>
+<tr><td>企业管理员</td><td>平台付费主体，企业账号所有者</td><td>成员管理、知识库、账号绑定、成本与全量数据查看</td></tr>
+<tr><td>营销专员</td><td>日常营销执行者</td><td>创建/运行任务、编辑内容、查看线索与效果</td></tr>
+<tr><td>审核人</td><td>内容质量把关者</td><td>审核、打回、直接编辑待审内容</td></tr>
+<tr><td>AI Agent（系统）</td><td>自动化执行者</td><td>按任务流执行研究/生成/发布，不自主发布未审核内容</td></tr>
+</tbody>
+</table>
+
+<h3>3.2 核心对象</h3>
+<table>
+<thead><tr><th>对象</th><th>定义</th></tr></thead>
+<tbody>
+<tr><td>知识库条目</td><td>品牌信息、产品事实、平台表达规范、竞品档案等可被 Agent 检索的事实单元</td></tr>
+<tr><td>营销任务</td><td>一次完整的 Agent 营销活动，包含目标、平台、频率、预算与执行步骤</td></tr>
+<tr><td>内容稿件</td><td>Agent 生成、经审核后发布的单条社媒内容</td></tr>
+<tr><td>社媒账号</td><td>企业绑定的 LinkedIn / Facebook 等平台账号</td></tr>
+<tr><td>线索</td><td>从社媒互动中提取的潜在客户信息</td></tr>
+</tbody>
+</table>
+
+<h3>3.3 核心用户旅程</h3>
+<div class="card">
+<p><strong>入口条件：</strong>企业已注册、配置品牌/产品知识库、绑定至少一个社媒账号。</p>
+<div class="flow">
+  <span class="node">配置知识库</span><span class="arrow">→</span>
+  <span class="node">绑定社媒账号</span><span class="arrow">→</span>
+  <span class="node">创建营销任务</span><span class="arrow">→</span>
+  <span class="node agent">Agent 研究/选题</span><span class="arrow">→</span>
+  <span class="node agent">Agent 生成内容</span><span class="arrow">→</span>
+  <span class="node human">人工审核</span><span class="arrow">→</span>
+  <span class="node">排期发布</span><span class="arrow">→</span>
+  <span class="node agent">回收线索</span><span class="arrow">→</span>
+  <span class="node end">效果与成本分析</span>
+</div>
+<p><strong>完成证据：</strong>内容已发布到目标社媒平台，平台回收互动与线索数据，效果与成本在看板中可查。</p>
+<p><strong>关键恢复路径：</strong>审核打回 → Agent 依据修改意见重新生成；发布失败 → 自动重试并告警；线索同步失败 → 进入重试队列。</p>
+</div>
+
+<!-- ============================ 4. 功能需求 ============================ -->
+<h2>4. 功能需求</h2>
+
+<!-- FR-1 -->
+<div class="fr-head"><span class="fr-id">FR-1</span><h3 style="margin:0">品牌与产品知识库管理</h3></div>
+<div class="card">
+<p><strong>目的：</strong>为内容生成提供事实来源，保障生成内容符合品牌定位、产品事实与平台表达习惯。</p>
+<p><strong>触发：</strong>企业管理员或营销专员在"知识库"模块新增/编辑条目。</p>
+<h4>条目类型</h4>
+<table>
+<thead><tr><th>类型</th><th>内容示例</th><th>用途</th></tr></thead>
+<tbody>
+<tr><td>品牌信息</td><td>品牌定位、slogan、核心价值主张、禁用词</td><td>统一品牌调性</td></tr>
+<tr><td>产品信息</td><td>产品名、功能、参数、卖点、适用场景</td><td>内容事实依据</td></tr>
+<tr><td>平台规范</td><td>LinkedIn/Facebook 字数、语气、Hashtag 习惯</td><td>适配平台表达</td></tr>
+<tr><td>竞品档案</td><td>竞品名称、定位、主打卖点</td><td>差异化选题</td></tr>
+</tbody>
+</table>
+<h4>处理规则</h4>
+<ul>
+  <li>每条目字段：标题、正文、适用平台标签（可多选）、来源、更新时间。</li>
+  <li>条目状态：<span class="state s-draft">草稿</span> → <span class="state s-live">已生效</span> → <span class="state s-cancel">已归档</span>；仅"已生效"条目可被 Agent 检索。</li>
+  <li>Agent 在生成内容前，按任务目标与平台标签检索相关条目，作为生成上下文。</li>
+</ul>
+<h4>异常</h4>
+<ul>
+  <li>知识库为空时创建营销任务，系统提示"请先配置品牌/产品知识库"，允许跳过但标记内容质量风险。</li>
+</ul>
+</div>
+
+<!-- FR-2 -->
+<div class="fr-head"><span class="fr-id">FR-2</span><h3 style="margin:0">AI Agent 营销任务流</h3></div>
+<div class="card">
+<p><strong>目的：</strong>将营销需求拆解为多步骤 Agent 任务流，实现工具调用、状态管理、记忆、条件分支与人工审核。</p>
+<p><strong>触发：</strong>营销专员创建任务，设定目标、目标平台、内容频率、预算上限。</p>
+
+<h4>任务流步骤</h4>
+<ol>
+  <li><strong>市场与竞品研究</strong>：Agent 调用数据服务，输出行业趋势与竞品内容简报。</li>
+  <li><strong>选题</strong>：基于研究结果 + 知识库，生成选题列表（含角度、预估互动点）。</li>
+  <li><strong>内容生成</strong>：按平台规范生成英文内容初稿，附 Hashtag 与配图建议。</li>
+  <li><strong>人工审核</strong>（见 FR-4）：审核通过进入排期，打回则回到生成步骤。</li>
+  <li><strong>排期</strong>：设定发布时间（支持批量定时）。</li>
+  <li><strong>发布</strong>（见 FR-3）：调用社媒 API 发布。</li>
+  <li><strong>效果回收</strong>：采集曝光、互动、点击等数据（见 FR-6）。</li>
+</ol>
+
+<h4>任务状态机</h4>
+<div class="flow">
+  <span class="state s-draft">草稿</span><span class="arrow">→</span>
+  <span class="state s-review">审核中</span><span class="arrow">→</span>
+  <span class="state s-ready">待发布</span><span class="arrow">→</span>
+  <span class="state s-live">已发布</span><span class="arrow">→</span>
+  <span class="state s-live">已完成</span>
+</div>
+<p class="small">任意步骤失败 → <span class="state s-fail">失败</span>（自动重试，见 FR-7）；用户主动终止 → <span class="state s-cancel">已取消</span>。</p>
+
+<h4>记忆与分支</h4>
+<ul>
+  <li><strong>任务内记忆：</strong>同一任务内研究结果、选题、修改意见在步骤间共享。</li>
+  <li><strong>任务间隔离：</strong>不同企业、不同任务的上下文互不泄露。</li>
+  <li><strong>条件分支：</strong>审核不通过 → 打回生成；生成内容未命中知识库关键事实 → 自动提示并要求补充。</li>
+</ul>
+</div>
+
+<!-- FR-3 -->
+<div class="fr-head"><span class="fr-id">FR-3</span><h3 style="margin:0">社媒账号管理与内容发布</h3></div>
+<div class="card">
+<p><strong>目的：</strong>绑定企业社媒账号并将审核通过的内容发布到目标平台。</p>
+<h4>账号绑定</h4>
+<ul>
+  <li>支持 LinkedIn、Facebook 账号 OAuth 授权绑定；P0 覆盖这两个平台。</li>
+  <li>绑定后显示账号名称、平台、授权状态、到期时间；授权失效时标红并提醒重新授权。</li>
+</ul>
+<h4>发布规则</h4>
+<ul>
+  <li>仅<span class="state s-ready">待发布</span>且审核通过的稿件可发布。</li>
+  <li>支持<strong>立即发布</strong>与<strong>定时发布</strong>；定时任务由系统按设定时间触发。</li>
+  <li>发布结果（成功/失败、平台帖子 URL）回写稿件状态与任务日志。</li>
+  <li>同一稿件不可重复发布；重复发布需另存为新稿件。</li>
+</ul>
+<h4>异常</h4>
+<ul>
+  <li>授权过期 / API 限流 → 发布失败，进入重试队列并通知负责人（见 FR-7）。</li>
+</ul>
+</div>
+
+<!-- FR-4 -->
+<div class="fr-head"><span class="fr-id">FR-4</span><h3 style="margin:0">人工审核工作流</h3></div>
+<div class="card">
+<p><strong>目的：</strong>在内容发布前由人工把关质量，Agent 不自主发布未审核内容。</p>
+<h4>稿件状态</h4>
+<div class="flow">
+  <span class="state s-draft">待审核</span><span class="arrow">→</span>
+  <span class="state s-live">审核通过</span>
+</div>
+<div class="flow">
+  <span class="state s-draft">待审核</span><span class="arrow">→</span>
+  <span class="state s-fail">打回</span><span class="arrow">重新生成</span><span class="arrow">待审核</span>
+</div>
+<h4>审核操作</h4>
+<table>
+<thead><tr><th>操作</th><th>结果</th><th>后续</th></tr></thead>
+<tbody>
+<tr><td>通过</td><td>稿件进入"待发布"</td><td>可排期发布</td></tr>
+<tr><td>打回（必填修改意见）</td><td>稿件退回 Agent</td><td>Agent 依据意见重新生成，再次进入"待审核"</td></tr>
+<tr><td>直接编辑</td><td>审核人修改稿件内容</td><td>保存后进入"待发布"，记录修改人与版本</td></tr>
+</tbody>
+</table>
+<h4>规则</h4>
+<ul>
+  <li>审核超时（默认 24 小时，可配置）向审核人发送提醒。</li>
+  <li>打回次数达到上限（默认 3 次，可配置）后任务标记为<span class="state s-fail">失败</span>，通知营销专员介入。</li>
+</ul>
+</div>
+
+<!-- FR-5 -->
+<div class="fr-head"><span class="fr-id">FR-5</span><h3 style="margin:0">线索整理与 CRM 对接</h3></div>
+<div class="card">
+<p><strong>目的：</strong>从社媒互动中提取潜在客户线索，并流转至企业 CRM。</p>
+<h4>线索来源</h4>
+<ul>
+  <li>LinkedIn/Facebook 私信、评论、主页访问表单中提取的潜在客户信息。</li>
+</ul>
+<h4>线索字段</h4>
+<table>
+<thead><tr><th>字段</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>姓名 / 公司 / 职位</td><td>从互动内容与公开资料提取</td></tr>
+<tr><td>联系方式</td><td>邮箱、电话（若可获取）</td></tr>
+<tr><td>来源平台 / 来源内容</td><td>关联到具体平台与已发布稿件</td></tr>
+<tr><td>意向度</td><td>Agent 依据互动内容判定（高/中/低）</td></tr>
+<tr><td>状态</td><td>新线索 / 已跟进 / 已转化 / 无效</td></tr>
+</tbody>
+</table>
+<h4>流转规则</h4>
+<ul>
+  <li>新线索进入线索池，可人工分配给跟进人。</li>
+  <li>支持通过 <strong>API / Webhook</strong> 将线索推送到外部 CRM；推送失败进入重试队列。</li>
+  <li>同一联系人在同一企业内去重，合并为一条线索并记录来源。</li>
+</ul>
+</div>
+
+<!-- FR-6 -->
+<div class="fr-head"><span class="fr-id">FR-6</span><h3 style="margin:0">效果分析看板</h3></div>
+<div class="card">
+<p><strong>目的：</strong>度量内容表现、线索质量与转化，支撑持续优化。</p>
+<h4>指标维度</h4>
+<div class="two-col">
+<div>
+<h4>内容指标</h4>
+<ul>
+  <li>曝光量、互动量（点赞/评论/分享）、点击率</li>
+  <li>按平台、任务、稿件聚合</li>
+</ul>
+</div>
+<div>
+<h4>线索与转化指标</h4>
+<ul>
+  <li>新增线索数、有效线索率、转化率</li>
+  <li>按来源平台、内容、时间聚合</li>
+</ul>
+</div>
+</div>
+<h4>筛选与导出</h4>
+<ul>
+  <li>支持按平台、任务、时间范围筛选；支持导出 CSV。</li>
+</ul>
+<div class="assume">
+<strong>[Assumption, TBD]</strong> 转化率需依赖 CRM 回传的转化数据；若企业未对接 CRM，转化率指标暂以"已跟进/已转化"人工标记为准。
+</div>
+</div>
+
+<!-- FR-7 -->
+<div class="fr-head"><span class="fr-id">FR-7</span><h3 style="margin:0">任务日志、异常处理与重试监控</h3></div>
+<div class="card">
+<p><strong>目的：</strong>保障任务可观测、可恢复、可维护。</p>
+<h4>任务日志</h4>
+<ul>
+  <li>每个步骤记录：开始/结束时间、输入、输出摘要、耗时、状态。</li>
+  <li>日志保留期限：<code>[TBD]</code>（建议不少于 90 天）。</li>
+</ul>
+<h4>异常与重试</h4>
+<table>
+<thead><tr><th>场景</th><th>处理</th></tr></thead>
+<tbody>
+<tr><td>模型调用失败 / 超时</td><td>自动重试（默认 3 次，指数退避）</td></tr>
+<tr><td>社媒 API 限流 / 授权失效</td><td>重试 + 通知负责人重新授权</td></tr>
+<tr><td>CRM 推送失败</td><td>进入重试队列，超过上限后人工介入</td></tr>
+<tr><td>重试仍失败</td><td>任务置为<span class="state s-fail">失败</span>，通知负责人并保留上下文</td></tr>
+</tbody>
+</table>
+<h4>运行监控</h4>
+<ul>
+  <li>提供任务运行状态视图（运行中 / 等待审核 / 待发布 / 失败），支持按状态筛选与快速介入。</li>
+</ul>
+</div>
+
+<!-- FR-8 -->
+<div class="fr-head"><span class="fr-id">FR-8</span><h3 style="margin:0">模型调用成本监控</h3></div>
+<div class="card">
+<p><strong>目的：</strong>度量 AI 投入，支撑成本控制与 ROI 评估。</p>
+<ul>
+  <li>记录每次模型调用的 token 消耗与费用，关联到具体任务与稿件。</li>
+  <li>按<strong>任务 / 平台 / 时间</strong>维度汇总成本。</li>
+  <li>计算单条内容成本、单线索成本，在看板与 FR-6 效果指标并列展示。</li>
+  <li>支持设置任务级成本上限，达到上限时暂停生成并通知负责人。</li>
+</ul>
+<div class="assume">
+<strong>[Assumption, TBD]</strong> 成本核算口径按实际调用的模型定价计算；多模型混用场景按各模型实际消耗分别统计后汇总。
+</div>
+</div>
+
+<!-- ============================ 5. 共享规则 ============================ -->
+<h2>5. 共享规则</h2>
+
+<h3>5.1 角色权限矩阵</h3>
+<table>
+<thead><tr><th>能力</th><th>企业管理员</th><th>营销专员</th><th>审核人</th></tr></thead>
+<tbody>
+<tr><td>成员与权限管理</td><td>✅</td><td>—</td><td>—</td></tr>
+<tr><td>知识库管理</td><td>✅</td><td>✅</td><td>查看</td></tr>
+<tr><td>创建/运行营销任务</td><td>✅</td><td>✅</td><td>—</td></tr>
+<tr><td>内容审核</td><td>✅</td><td>查看</td><td>✅</td></tr>
+<tr><td>社媒账号绑定</td><td>✅</td><td>—</td><td>—</td></tr>
+<tr><td>线索管理与分配</td><td>✅</td><td>✅</td><td>查看</td></tr>
+<tr><td>效果与成本看板</td><td>全量</td><td>本人/本任务</td><td>查看</td></tr>
+</tbody>
+</table>
+
+<h3>5.2 对象状态汇总</h3>
+<table>
+<thead><tr><th>对象</th><th>状态</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>知识库条目</td><td>草稿 / 已生效 / 已归档</td><td>仅"已生效"可被检索</td></tr>
+<tr><td>营销任务</td><td>草稿 / 审核中 / 待发布 / 已发布 / 已完成 / 失败 / 已取消</td><td>见 FR-2 状态机</td></tr>
+<tr><td>内容稿件</td><td>待审核 / 审核通过(待发布) / 已发布 / 打回 / 失败</td><td>见 FR-4</td></tr>
+<tr><td>线索</td><td>新线索 / 已跟进 / 已转化 / 无效</td><td>见 FR-5</td></tr>
+</tbody>
+</table>
+
+<h3>5.3 审计与通知</h3>
+<ul>
+  <li>所有审核、发布、删除、权限变更操作记录审计日志（操作人、时间、对象、变更内容）。</li>
+  <li>通知触发：待审核提醒、审核超时、发布失败、任务失败、成本达上限、线索同步失败。</li>
+  <li>通知渠道：站内通知 + 邮件 <code>[TBD 企业微信/钉钉是否接入]</code>。</li>
+</ul>
+
+<!-- ============================ 6. 开放问题 ============================ -->
+<h2>6. 开放问题（待确认）</h2>
+<div class="card">
+<ol>
+  <li><strong>平台范围：</strong>P0 确认仅 LinkedIn + Facebook，是否需提前纳入 X/Twitter？</li>
+  <li><strong>知识库来源：</strong>是否支持从企业现有文档（PDF/网页）批量导入，还是仅手动录入？</li>
+  <li><strong>审核策略：</strong>是否所有内容必须人工审核，还是低风险内容可配置为"自动通过"？</li>
+  <li><strong>CRM 对接：</strong>首批支持哪些 CRM（如 HubSpot、Salesforce、纷享销客）？是否需要内置轻量 CRM？</li>
+  <li><strong>多租户与数据隔离：</strong>平台服务多企业时，数据隔离与合规（如 GDPR）的边界需法务确认。</li>
+  <li><strong>成本上限：</strong>任务级成本上限的默认值与超额处理策略（暂停/降级模型/通知）。</li>
+  <li><strong>语言范围：</strong>P0 是否仅英文，小语种纳入 P1 的优先级？</li>
+</ol>
+</div>
+
+<div class="meta" style="margin-top:40px;text-align:center">— 文档结束 —</div>
+
+</div>
+</body>
+</html>
